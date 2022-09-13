@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:covid_19_stats/objects/world_data.dart';
-import 'package:covid_19_stats/pages/home_page.dart';
+// import 'package:covid_19_stats/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -26,29 +26,40 @@ class Routing {
     return jsonDecode(response.body);
   }
 
-  FutureOr<void> route(BuildContext context) {
-    fetchCountry(http.Client()).then((value) async {
-      for (var i = 0; i < value.length; i++) {
-        List l = value[i].name.toString().split(",");
-        value[i].name = l[0];
-        _countries.add(value[i].name.toString());
-        _map[value[i].name.toString()] = value[i];
-      }
-      _value = value;
+  FutureOr<Map<dynamic, dynamic>> route(BuildContext context) async {
+    List<Country> result = await fetchCountry(http.Client());
+    for (var i = 0; i < result.length; i++) {
+      List l = result[i].name.toString().split(",");
+      result[i].name = l[0];
+      _countries.add(result[i].name.toString());
+      _map[result[i].name.toString()] = result[i];
+    }
+    _value = result;
 
-      _info = await fetchall(http.Client());
+    _info = await fetchall(http.Client());
 
-      return Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Worldwide(
-            value: _value,
-            info: _info,
-            countries: _countries,
-            map: _map,
-          ),
-        ),
-      );
-    });
+    Map<dynamic, dynamic> obj = {
+      "value": _value,
+      "info": _info,
+      "countries": _countries,
+      "map": _map,
+    };
+
+    return obj;
   }
 }
+
+//   Future<dynamic> buildHome(context) {
+//     return Navigator.pushReplacement(
+//       context,
+//       MaterialPageRoute(
+//         builder: (context) => Worldwide(
+//           value: _value,
+//           info: _info,
+//           countries: _countries,
+//           map: _map,
+//         ),
+//       ),
+//     );
+//   }
+// }
