@@ -27,7 +27,7 @@ jobs:
       - uses: subosito/flutter-action@v1
       - uses: bluefireteam/flutter-gh-pages@v7
         with:
-          baseHref: /covid-19-stats
+          baseHref: /covid-19-stats/
 
       # Runs a single command using the runners shell
 
